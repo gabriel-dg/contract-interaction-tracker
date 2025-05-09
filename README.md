@@ -30,6 +30,26 @@ NETWORK=eth-mainnet
 CONTRACT_ADDRESS=0xYourContractAddressHere
 ```
 
+## Running the Script
+
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+2. Run the script:
+   ```bash
+   node index.js
+   ```
+
+3. The script will:
+   - Fetch all transactions interacting with your specified contract
+   - Extract and deduplicate wallet addresses
+   - Display the list of unique addresses and total count
+   - Save results to `results.json` in the project directory
+
+For large contracts, the script may take some time to complete as it paginates through all interactions.
+
 ## Key Concepts
 
 ### Getting Contract Interactions
