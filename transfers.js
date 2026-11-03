@@ -4,7 +4,12 @@ const fetch = require("node-fetch"); // Use 'import fetch from "node-fetch"' for
 // Get configuration from environment variables
 const apiKey = process.env.ALCHEMY_API_KEY;
 const contractAddress = process.env.CONTRACT_ADDRESS;
-const chain = process.env.CHAIN || "eth-sepolia"; // Default to Sepolia if not specified
+const chain = process.env.NETWORK || "eth-sepolia"; // Default to Sepolia if not specified
+
+if (!apiKey || !contractAddress) {
+  console.error("Missing ALCHEMY_API_KEY or CONTRACT_ADDRESS. Copy .env.example to .env and fill it in.");
+  process.exit(1);
+}
 
 // Build the URL dynamically based on the chain
 const url = `https://${chain}.g.alchemy.com/v2/${apiKey}`;
@@ -49,7 +54,12 @@ async function getUniqueInteractors(pageKey = null, allTransfers = []) {
       body: JSON.stringify(payload),
     });
 
-    const data = await response.json();
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok || data.error) {
+      const reason = data.error ? data.error.message : `HTTP ${response.status}`;
+      throw new Error(`Alchemy request failed: ${reason}`);
+    }
 
     // Add new transfers to our collection
     if (
